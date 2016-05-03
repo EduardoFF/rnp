@@ -17,7 +17,7 @@
  */
 
 #include "main.h"
-#include "Plotter.h"
+//#include "Plotter.h"
 #include "Random.h"
 #include "generator.h"
 #include "graph.h"
@@ -27,6 +27,7 @@
 param prob;
 //param def; //Default values for parameters
 //ofstream cdebug;
+
 
 #if WITH_OLD_BOOST_GEOMETRY
 using namespace boost::geometry;
@@ -40,48 +41,52 @@ bool pointInBox(point_2d &p,
 #endif
 
 void init_debug_file(string filename){
-		cdebug.open(filename.c_str());
-		cdebug << "********* START OF DEBUG FILE *************" << endl;
+  cdebug.open(filename.c_str());
+  cdebug << "********* START OF DEBUG FILE *************" << endl;
 
 }
 
 void close_debug_file(){
-	cdebug.close();
+  cdebug.close();
 }
 
 
+/**
+   generates a configuration file for TOSSIM simulator
+**/
+void
+generate_simulation(Graph *G, Network *net, string filename)
+{
 
-void generate_simulation(Graph *G, Network *net, string filename){
-
-	string sim_config_file 	= prob.output_path + "simconfig-" + prob.instance_id + "-" + filename + ".txt";
-	string net_file 	= prob.output_path + "sim-" + prob.instance_id + "-" + filename + ".net";
+  string sim_config_file 	= prob.output_path + "simconfig-" + prob.instance_id + "-" + filename + ".txt";
+  string net_file 	= prob.output_path + "sim-" + prob.instance_id + "-" + filename + ".net";
 
 	
-	ofstream netFile (net_file.c_str());
+  ofstream netFile (net_file.c_str());
 
-	ofstream simconfig (sim_config_file.c_str());
+  ofstream simconfig (sim_config_file.c_str());
 
-	simconfig << "network_file\t" << net_file << "\n";
-	simconfig << "sim_time\t" << "60" << "\n";
-	simconfig << "area_size\t" << net->dimX << "\t" << net->dimY << "\n";
-	simconfig << "random_seed\t" << prob.seed << "\n";
+  simconfig << "network_file\t" << net_file << "\n";
+  simconfig << "sim_time\t" << "60" << "\n";
+  simconfig << "area_size\t" << net->dimX << "\t" << net->dimY << "\n";
+  simconfig << "random_seed\t" << prob.seed << "\n";
 
-	simconfig.close();
-	G->toNetFile(netFile);
-/*  Not necesary - possible links added in sim script 	
-	for(int i=0;i<net->size();i++){
-		for(int j=i+1;j<net->size();j++){
-			Node &n = net->getNode(i);
-			Node &m = net->getNode(j);
-			if(net->inRange(n,m)){
-				netFile << "link\t" << i << "\t" << j << endl;
-				netFile << "link\t" << j << "\t" << i << endl;
+  simconfig.close();
+  G->toNetFile(netFile);
+  /*  Not necesary - possible links added in sim script 	
+      for(int i=0;i<net->size();i++){
+      for(int j=i+1;j<net->size();j++){
+      Node &n = net->getNode(i);
+      Node &m = net->getNode(j);
+      if(net->inRange(n,m)){
+      netFile << "link\t" << i << "\t" << j << endl;
+      netFile << "link\t" << j << "\t" << i << endl;
 				
-			}
-		}
-	}
-	*/
-	netFile.close();
+      }
+      }
+      }
+  */
+  netFile.close();
 
 }
 
@@ -95,7 +100,7 @@ void generate_simulation(Graph *G, Network *net, string filename){
  * @return 
  */
 
-  void
+void
 generate_grid(Network *net, double dimX, double dimY, double r )
 {
   double x, y;
@@ -120,12 +125,14 @@ generate_grid(Network *net, double dimX, double dimY, double r )
 
 }
 
-  void 
+void 
 generate_grid(Network *net, double dimX, double offset_x, 
 	      double dimY, double offset_y, double r )
 {
 
-  DEBUG(3) cdebug << "griding dimX " << dimX << " dimY " << dimY << " offset_x " << offset_x << " offset_y " << offset_y << " r " << r << endl;
+  DEBUG(3) cdebug << "griding dimX " << dimX << " dimY " << dimY
+		  << " offset_x " << offset_x << " offset_y "
+		  << offset_y << " r " << r << endl;
   double x, y;
 
   x = 0;
@@ -161,7 +168,7 @@ typedef struct gridh2_region
 
 } gridh2_region_t;
 
-  void 
+void 
 generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double max_res)
 {
   /**  Divide region in sub-areas and calculate node density
@@ -175,18 +182,18 @@ generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double 
   double resolutions[GRID_H2_RANGE];
 
   for(int i=0;i<GRID_H2_RANGE-1;i++)
-  {
-    resolutions[i] = min_res + ((max_res-min_res)/(GRID_H2_RANGE-1))*i;
-    DEBUG(3) cdebug << "res " << i << " = " << resolutions[i] << endl;
-  }
+    {
+      resolutions[i] = min_res + ((max_res-min_res)/(GRID_H2_RANGE-1))*i;
+      DEBUG(3) cdebug << "res " << i << " = " << resolutions[i] << endl;
+    }
   resolutions[GRID_H2_RANGE-1] = max_res;
 
   /** Get node locations as points */
   for(int i=0;i<net->size();i++)
-  {
-    Node &n = net->getNode(i);
-    nodes.push_back(boost::geometry::make<point_t>(n.x,n.y));
-  }
+    {
+      Node &n = net->getNode(i);
+      nodes.push_back(boost::geometry::make<point_t>(n.x,n.y));
+    }
 
   size_x = dimX/GRID_H2_X;
   size_y = dimY/GRID_H2_Y;
@@ -206,8 +213,8 @@ generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double 
       point_2d q(off_x+size_x,off_y+size_y);
 
       DEBUG(3) cdebug << "region " 
-	<< i << j << ": " << "(" << off_x 
-	<< " " << off_y << ")"	<< endl;
+		      << i << j << ": " << "(" << off_x 
+		      << " " << off_y << ")"	<< endl;
 
       /** calculate density */
       int count=0;
@@ -216,8 +223,8 @@ generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double 
 	  count++;
       regions[i][j].density = (1.0*count)/(1.0*nodes.size());
       DEBUG(3) cdebug << "region " 
-	<< i << j << ": (" << count 
-	<< ") " << regions[i][j].density << endl;
+		      << i << j << ": (" << count 
+		      << ") " << regions[i][j].density << endl;
       off_y += size_y;
     }
     off_x+= size_x;
@@ -225,26 +232,26 @@ generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double 
 
   /** calculate min_neighbor_density */
   int dir[8][2] = {{-1,-1},
-    {-1, 0},
-    {-1,1},
-    { 0, -1},
-    { 0, 1},
-    { 1,-1},
-    { 1, 0},
-    { 1, 1}};
+		   {-1, 0},
+		   {-1,1},
+		   { 0, -1},
+		   { 0, 1},
+		   { 1,-1},
+		   { 1, 0},
+		   { 1, 1}};
   for(int i=1;i < GRID_H2_X-1;i++)
-  {
-    for(int j = 1; j < GRID_H2_Y-1;j++)
     {
-      double avg_d = 0;
-      for(int k=0;k<8;k++){
-	int ii = i+dir[k][0];
-	int jj = j+dir[k][1];
-	avg_d +=regions[ii][jj].density;
-      }
-      regions[i][j].avg_neighbor_density = avg_d/8;;
+      for(int j = 1; j < GRID_H2_Y-1;j++)
+	{
+	  double avg_d = 0;
+	  for(int k=0;k<8;k++){
+	    int ii = i+dir[k][0];
+	    int jj = j+dir[k][1];
+	    avg_d +=regions[ii][jj].density;
+	  }
+	  regions[i][j].avg_neighbor_density = avg_d/8;;
+	}
     }
-  }
 
   /** 
    * Assign maximum delta(resolution) to border and 
@@ -252,15 +259,15 @@ generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double 
    * */
 
   for(int j=0;j<GRID_H2_Y;j++)
-  {
-    regions[0][j].res = max_res;
-    regions[GRID_H2_X-1][j].res = max_res;
-  }
+    {
+      regions[0][j].res = max_res;
+      regions[GRID_H2_X-1][j].res = max_res;
+    }
   for(int i=0;i<GRID_H2_X;i++)
-  {
-    regions[i][0].res = max_res;
-    regions[i][GRID_H2_Y-1].res = max_res;
-  }
+    {
+      regions[i][0].res = max_res;
+      regions[i][GRID_H2_Y-1].res = max_res;
+    }
 
   /** For other regions - calculate resolution based on
    *  average resolution of region and surroundings 
@@ -268,39 +275,39 @@ generate_grid_h2(Network *net, double dimX, double dimY, double min_res, double 
    *  resolution based on the distance to the standard
    *  */
   for(int i=1;i<GRID_H2_X-1;i++)
-  {
-    for(int j=1;j<GRID_H2_Y-1;j++)
     {
-      //double avg_density = 
-      //(regions[i][j].avg_neighbor_density + regions[i][j].density)/2.0;
-      double avg_density = regions[i][j].density;
+      for(int j=1;j<GRID_H2_Y-1;j++)
+	{
+	  //double avg_density = 
+	  //(regions[i][j].avg_neighbor_density + regions[i][j].density)/2.0;
+	  double avg_density = regions[i][j].density;
 
-      //if(avg_density == 1.0) avg_density-=0.001;
-      int rang = 
-	fabs(standard_density - avg_density - 0.0001)/(standard_density/GRID_H2_RANGE);
-      int rang_ix = min(rang,GRID_H2_RANGE-1);
-      if( rang_ix < 0 || rang_ix > GRID_H2_RANGE-1)
-      {
-	fprintf(stderr, "WTF! error in grid_h2\n");
-      }
-      regions[i][j].res = resolutions[rang_ix];
-      DEBUG(3) cdebug << "region " << i << j << " dens " 
-	<< regions[i][j].density << " rank " << rang 
-	<< " res " << regions[i][j].res << endl;
+	  //if(avg_density == 1.0) avg_density-=0.001;
+	  int rang = 
+	    fabs(standard_density - avg_density - 0.0001)/(standard_density/GRID_H2_RANGE);
+	  int rang_ix = min(rang,GRID_H2_RANGE-1);
+	  if( rang_ix < 0 || rang_ix > GRID_H2_RANGE-1)
+	    {
+	      fprintf(stderr, "WTF! error in grid_h2\n");
+	    }
+	  regions[i][j].res = resolutions[rang_ix];
+	  DEBUG(3) cdebug << "region " << i << j << " dens " 
+			  << regions[i][j].density << " rank " << rang 
+			  << " res " << regions[i][j].res << endl;
+	}
     }
-  }
 
   /** Generate nodes */
   for(int i=0;i<GRID_H2_X;i++)
-  {
-    for(int j=0;j<GRID_H2_Y;j++)
     {
-      generate_grid(net, size_x, 
-		    regions[i][j].offset_x, 
-		    size_y, regions[i][j].offset_y, 
-		    regions[i][j].res);
+      for(int j=0;j<GRID_H2_Y;j++)
+	{
+	  generate_grid(net, size_x, 
+			regions[i][j].offset_x, 
+			size_y, regions[i][j].offset_y, 
+			regions[i][j].res);
+	}
     }
-  }
 }
 
 
@@ -317,45 +324,45 @@ generate_grid_h1(Network *net, double dimX, double dimY)
 
   /** Create horizontal segments */
   for(int i=0;i<grid.size();i++)
-  {
-    point_t p1,p2;
-    p1 = boost::geometry::make<point_t>(0.0,grid[i].y());
-    p2 = boost::geometry::make<point_t>(dimX, grid[i].y());
+    {
+      point_t p1,p2;
+      p1 = boost::geometry::make<point_t>(0.0,grid[i].y());
+      p2 = boost::geometry::make<point_t>(dimX, grid[i].y());
 
-    segment_t seg;
-    seg.push_back(p1);
-    seg.push_back(p2);
-    sgs.push_back( seg);
-  }
+      segment_t seg;
+      seg.push_back(p1);
+      seg.push_back(p2);
+      sgs.push_back( seg);
+    }
   /** Create horizontal segments */
   for(int i=0;i<grid.size();i++)
-  {
-    point_t p1,p2;
-    p1 = boost::geometry::make<point_t>(grid[i].x(),0.0);
-    p2 = boost::geometry::make<point_t>(grid[i].x(),dimY);
+    {
+      point_t p1,p2;
+      p1 = boost::geometry::make<point_t>(grid[i].x(),0.0);
+      p2 = boost::geometry::make<point_t>(grid[i].x(),dimY);
 
-    segment_t seg;
-    seg.push_back(p1);
-    seg.push_back(p2);
-    sgs.push_back( seg);
-  }
+      segment_t seg;
+      seg.push_back(p1);
+      seg.push_back(p2);
+      sgs.push_back( seg);
+    }
 
   for(int i=0;i<sgs.size();i++)
-  {
-    for(int j=i+1;j<sgs.size();j++)
     {
-      //std::vector<point_t > intersection;
-      double x,y;
-      if(lineIntersection(sgs[i],sgs[j],&x,&y))
-      {
-	net->addNode(x,y,RELAY,"");
-      }
-      //    				 boost::geometry::intersection_inserter<point_t >(sgs[i], sgs[j], 
-      //										  std::back_inserter(intersection));
-      //	 cout << "Intersection size = " << intersection.size() << endl;
+      for(int j=i+1;j<sgs.size();j++)
+	{
+	  //std::vector<point_t > intersection;
+	  double x,y;
+	  if(lineIntersection(sgs[i],sgs[j],&x,&y))
+	    {
+	      net->addNode(x,y,RELAY,"");
+	    }
+	  //    				 boost::geometry::intersection_inserter<point_t >(sgs[i], sgs[j], 
+	  //										  std::back_inserter(intersection));
+	  //	 cout << "Intersection size = " << intersection.size() << endl;
 
+	}
     }
-  }
 
 }
 #endif
@@ -418,7 +425,7 @@ generate_random_nodes(Network *net, RandomGenerator *gen, double dimX, double di
  * 
  * Detailed description starts here.
  */
-  void 
+void 
 generate_cluster_nodes(Network *net, RandomGenerator *gen, double dimX, double dimY,
 		       int num_static, int num_base, clusters_t &clu)
 {
@@ -447,36 +454,36 @@ generate_cluster_nodes(Network *net, RandomGenerator *gen, double dimX, double d
   int c_static = 0;
   int ns=0;
   for(int i=0;i<clu.n_x;i++)
-  {
-    for(int j=0;j<clu.n_y;j++)
     {
-      if(i==clu.n_x-1 && j == clu.n_y-1)
-      {
-	/** place the remaining nodes in the last cluster */
-	clu_static[clu.n_x-1][clu.n_y-1] = num_static - c_static;
-	DEBUG(2) cdebug << "placing " << (num_static - c_static) 
-	  << " in cluster " << i << " " << j << endl;
-
-      }
-      else
-      {
-	clu.density[i*clu.n_y + j] = clu.density[i*clu.n_y + j]/ds_x;
-	if(clu.density[i*clu.n_y + j] == 0)
+      for(int j=0;j<clu.n_y;j++)
 	{
-	  ns = 0;
-	}
-	else
-	{
+	  if(i==clu.n_x-1 && j == clu.n_y-1)
+	    {
+	      /** place the remaining nodes in the last cluster */
+	      clu_static[clu.n_x-1][clu.n_y-1] = num_static - c_static;
+	      DEBUG(2) cdebug << "placing " << (num_static - c_static) 
+			      << " in cluster " << i << " " << j << endl;
 
-	  ns = num_static*clu.density[i*clu.n_y + j];
-	  c_static+= ns;
+	    }
+	  else
+	    {
+	      clu.density[i*clu.n_y + j] = clu.density[i*clu.n_y + j]/ds_x;
+	      if(clu.density[i*clu.n_y + j] == 0)
+		{
+		  ns = 0;
+		}
+	      else
+		{
+
+		  ns = num_static*clu.density[i*clu.n_y + j];
+		  c_static+= ns;
+		}
+	      clu_static[i][j] = ns;
+	      DEBUG(2) cdebug << "placing " << ns 
+			      << " in cluster " << i << " " << j << endl;
+	    }
 	}
-	clu_static[i][j] = ns;
-	DEBUG(2) cdebug << "placing " << ns 
-	  << " in cluster " << i << " " << j << endl;
-      }
     }
-  }
   offset_x = 0.0;
   for(int i=0;i < clu.n_x;i++){
     offset_y = 0.0;
@@ -512,17 +519,13 @@ generate_cluster_nodes(Network *net, RandomGenerator *gen, double dimX, double d
 	p+= clu.density[i*clu.n_y + j];
       }
       offset_x += size_x;
-
     }
-
   }
-
-
-
 }
 
 
-GetPot read_config_file(char *config_file)
+GetPot
+read_config_file(char *config_file)
 {
   /// Define the syntax for the input configuration file and start reading
   string base_directory  = "./";  
@@ -533,7 +536,9 @@ GetPot read_config_file(char *config_file)
   string input_file    = config_file;
 
   GetPot infile((input_file).c_str(), 
-		       comment_start.c_str(), comment_end.c_str(), field_separator.c_str()); 
+		comment_start.c_str(),
+		comment_end.c_str(),
+		field_separator.c_str()); 
   return (infile);
 }
 
@@ -745,9 +750,9 @@ string fixPath(string path)
 {
   string ret_path = path;
   if(path[path.size()-1] != '/')
-  {
-    ret_path += "/";
-  }
+    {
+      ret_path += "/";
+    }
   return ret_path;
 }
 
@@ -774,18 +779,18 @@ load_config_file(GetPot infile, param &def)
   /// (b) else, leave everyting as before
   bool fixed_relays = infile("ProblemInstance/fixed_relays",false);
   if( fixed_relays)
-  {
-    prob.fixed_relays = fixed_relays;
-    if(prob.relays.size())
     {
-      prob.relays.clear();
+      prob.fixed_relays = fixed_relays;
+      if(prob.relays.size())
+	{
+	  prob.relays.clear();
+	}
+      int nrelays = infile.vector_variable_size("ProblemInstance/relays");
+      for(int i=0;i<nrelays;i++){
+	string rid = infile("ProblemInstance/relays","no-relay",i);
+	prob.relays.push_back(rid);
+      }
     }
-    int nrelays = infile.vector_variable_size("ProblemInstance/relays");
-    for(int i=0;i<nrelays;i++){
-      string rid = infile("ProblemInstance/relays","no-relay",i);
-      prob.relays.push_back(rid);
-    }
-  }
 
   prob.demand_type = infile("ProblemInstance/demand_type", def.demand_type.c_str());
   prob.demand_file = infile("ProblemInstance/demand_file",def.demand_file.c_str());
@@ -819,9 +824,9 @@ load_config_file(GetPot infile, param &def)
   bool def_has_clusters = def.use_clusters;
   int def_cluster_size = 0;
   if(def.use_clusters)
-  {
-    def_cluster_size = def.clu.n_x * def.clu.n_y;
-  }
+    {
+      def_cluster_size = def.clu.n_x * def.clu.n_y;
+    }
 
 
   prob.use_clusters =  infile("Clusters/use_clusters",def.use_clusters);
@@ -829,21 +834,21 @@ load_config_file(GetPot infile, param &def)
   prob.clu.n_y =  infile("Clusters/Y",def.clu.n_y);
   if(prob.use_clusters){
     if(!def_has_clusters)
-    {
-      // If default param had no clusters
-      // we can allocate memory
-      prob.clu.density = 
-	(double*)malloc(prob.clu.n_x*prob.clu.n_y*sizeof(double));
-    }else
-    {
-      // If had cluster, but differente size
-      if(def_cluster_size != (prob.clu.n_x * prob.clu.n_y))
       {
-	free(prob.clu.density);
+	// If default param had no clusters
+	// we can allocate memory
 	prob.clu.density = 
 	  (double*)malloc(prob.clu.n_x*prob.clu.n_y*sizeof(double));
+      }else
+      {
+	// If had cluster, but differente size
+	if(def_cluster_size != (prob.clu.n_x * prob.clu.n_y))
+	  {
+	    free(prob.clu.density);
+	    prob.clu.density = 
+	      (double*)malloc(prob.clu.n_x*prob.clu.n_y*sizeof(double));
+	  }
       }
-    }
 
     int ndens = infile.vector_variable_size("Clusters/density");
     for(int i=0;i<ndens;i++){
@@ -1071,7 +1076,7 @@ load_config_file(GetPot infile, param &def)
 	   def.ilp_model.incomplete_delivery_penalty);
 
 
-    /********  CPLEX config *********/
+  /********  CPLEX config *********/
   prob.mycplex_params.mipGap = infile("CPLEX/mipGap", def.mycplex_params.mipGap);
   prob.mycplex_params.trelim = infile("CPLEX/trelim", def.mycplex_params.trelim);
   prob.mycplex_params.logToFile = infile("CPLEX/logToFile", def.mycplex_params.logToFile);
@@ -1090,6 +1095,8 @@ load_config_file(GetPot infile, param &def)
   prob.mycplex_params.probe = infile("CPLEX/probe", def.mycplex_params.probe);
   prob.mycplex_params.save_cpx_params =
     infile("CPLEX/save_cpx_params", def.mycplex_params.save_cpx_params);
+  prob.mycplex_params.clocktype =
+    infile("CPLEX/clocktype", def.mycplex_params.clocktype);
 
   /// Matheuristic
   prob.matheuristic_params.comm = 
@@ -1111,27 +1118,27 @@ checkParameters()
   prob.lp_params.output_path = fixPath(prob.lp_params.output_path);
 
   if(prob.ga_params.log_population_file == "default")
-  {
-    prob.ga_params.log_population_file = prob.instance_id + ".ga_pop_log";
-  }
+    {
+      prob.ga_params.log_population_file = prob.instance_id + ".ga_pop_log";
+    }
   if(prob.ga_params.log_generation_file == "default")
-  {
-    prob.ga_params.log_generation_file = prob.instance_id + ".ga_gen_log";
-  }
+    {
+      prob.ga_params.log_generation_file = prob.instance_id + ".ga_gen_log";
+    }
 
   if(prob.ga_params.log_file == "default")
-  {
-    prob.ga_params.log_file = prob.instance_id + ".ga_log";
-  }
+    {
+      prob.ga_params.log_file = prob.instance_id + ".ga_log";
+    }
 
   if(prob.ga_params.debug_file == "default")
-  {
-    prob.ga_params.debug_file = prob.instance_id + ".ga_debug";
-  }
+    {
+      prob.ga_params.debug_file = prob.instance_id + ".ga_debug";
+    }
   if(prob.ga_params.output_file == "default")
-  {
-    prob.ga_params.output_file = prob.instance_id + ".ga_sol";
-  }
+    {
+      prob.ga_params.output_file = prob.instance_id + ".ga_sol";
+    }
   if(prob.Low_res_use_file && prob.Low_res_solution_file == "default")
     prob.Low_res_solution_file = prob.instance_id + ".sol";
   if(prob.network_file == "default")
@@ -1165,11 +1172,11 @@ output_graphs(Graph *G, string filename)
   graph_dot_file = prob.output_path + prob.instance_id + "-" + filename + ".dot";
   G->toGraphviz(graph_dot_file); 
   if(prob.gen_graphs)
-  {
-    cmd = GRAPHVIZ_CMD(graph_dot_file) + graph_file;
-    DEBUG(2) cdebug << "neato cmd" << cmd << endl;
-    if(system(cmd.c_str()))
-      printf("Generator: Error executing command - %s\n",cmd.c_str());
-  }
+    {
+      cmd = GRAPHVIZ_CMD(graph_dot_file) + graph_file;
+      DEBUG(2) cdebug << "neato cmd" << cmd << endl;
+      if(system(cmd.c_str()))
+	printf("Generator: Error executing command - %s\n",cmd.c_str());
+    }
 }
 

@@ -19,17 +19,18 @@
 #define _RANDOM
 
 
-class RandomGenerator{
-	public:
-	virtual double operator()() = 0;
+class RandomGenerator
+{
+ public:
+  virtual double operator()() = 0;
 };
 
 class UniformRandom : public RandomGenerator{
-	public:
-  	variate_generator<mt19937, uniform_real<> > gen;
+ public:
+  variate_generator<mt19937, uniform_real<> > gen;
 
-	UniformRandom(int seed) : gen(mt19937(seed),uniform_real<>(0,1)){};
-	double operator()();
+ UniformRandom(int seed) : gen(mt19937(seed),uniform_real<>(0,1)){};
+  double operator()();
 };
 
 #endif

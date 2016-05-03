@@ -837,7 +837,7 @@ MyCplexSolver::addFlowCons()
     sense = 'E';
     colname = NULL;
     sprintf(rowname[0],"flow[%s]",nr.id.c_str());
-    printf("Adding row %s\n", rowname[0]);
+    //    printf("Adding row %s\n", rowname[0]);
     fflush(stdout);
     retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			&rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
@@ -895,8 +895,8 @@ MyCplexSolver::addFlowEdgeCons()
     rcnt++;
 
   }
-  printf("adding ...\n");
-  fflush(stdout);
+  //  printf("adding ...\n");
+  //fflush(stdout);
   colname = NULL;
   ccnt = 0;
   retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
@@ -1058,7 +1058,7 @@ MyCplexSolver::addFlowNeighborCons()
       sense = 'L';
       colname = NULL;
       sprintf(rowname[0],"flown[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1102,7 +1102,7 @@ MyCplexSolver::addFlowNeighborCons()
       sense = 'G';
       colname = NULL;
       sprintf(rowname[0],"flown2[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1156,7 +1156,7 @@ MyCplexSolver::addStrictFlowNeighborCons()
       sense = 'L';
       colname = NULL;
       sprintf(rowname[0],"strictflown[%s]", nid.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1209,7 +1209,7 @@ MyCplexSolver::addImFlowNeighborCons()
       sense = 'L';
       colname = NULL;
       sprintf(rowname[0],"flown1[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1229,7 +1229,7 @@ MyCplexSolver::addImFlowNeighborCons()
       sense = 'G';
       colname = NULL;
       sprintf(rowname[0],"flown2[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1259,10 +1259,10 @@ MyCplexSolver::addImFlowNeighborCons()
       sense = 'L';
       colname = NULL;
       sprintf(rowname[0],"flown1[%s]",ni.id.c_str());
-      printf("Adding row %s: lf[%s] + %ffx[%s] + %fy[%s] < %f \n",
-	     rowname[0], ni.id.c_str(), -prob.ilp_model.max_flow,
-	     ni.id.c_str(), prob.ilp_model.max_flow,ni.id.c_str(),
-	     rhs);
+      //      printf("Adding row %s: lf[%s] + %ffx[%s] + %fy[%s] < %f \n",
+      //     rowname[0], ni.id.c_str(), -prob.ilp_model.max_flow,
+      //     ni.id.c_str(), prob.ilp_model.max_flow,ni.id.c_str(),
+      //     rhs);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1287,7 +1287,7 @@ MyCplexSolver::addImFlowNeighborCons()
       sense = 'G';
       colname = NULL;
       sprintf(rowname[0],"flown2[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1343,7 +1343,7 @@ MyCplexSolver::addSinkFlowCons()
       sense = 'L';
       colname = NULL;
       sprintf(rowname[0],"sinkflow[%s]",nid.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1452,7 +1452,7 @@ MyCplexSolver::addLocalFlowCons()
 	      cnh++;
 	    }
 	}
-      printf("neighborhod size %d\n", neigh.size());
+      //      printf("neighborhod size %d\n", neigh.size());
       fflush(stdout);
       /// then, add the oflows
       FOREACH(it, neigh)
@@ -1479,7 +1479,7 @@ MyCplexSolver::addLocalFlowCons()
       sense = 'E';
       colname = NULL;
       sprintf(rowname[0],"lflow[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1525,7 +1525,7 @@ MyCplexSolver::addLocalFlowCons()
       sense = 'E';
       colname = NULL;
       sprintf(rowname[0],"lflow[%s]",ni.id.c_str());
-      printf("Adding row %s\n", rowname[0]);
+      //      printf("Adding row %s\n", rowname[0]);
       retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			  &rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
       if (retCPX) my_free_cplex("CPX add rows", retCPX, m_cpxenv, m_cpxlp);
@@ -1693,14 +1693,14 @@ MyCplexSolver::addBaseCons()
 
   if( nzcnt )
   {
-    printf("BaseCons nzcnt %d\n", nzcnt);
+    //    printf("BaseCons nzcnt %d\n", nzcnt);
     ccnt = 0;
     rcnt = 1;
     rhs = allD;
     sense = 'E';
     colname = NULL;
     sprintf(rowname[0],"base");
-    printf("Adding row %s\n", rowname[0]);
+    //    printf("Adding row %s\n", rowname[0]);
     fflush(stdout);
     retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			&rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
@@ -1708,15 +1708,15 @@ MyCplexSolver::addBaseCons()
   }
 
 
-  printf("going to free\n");
-  fflush(stdout);
+  //  printf("going to free\n");
+  //fflush(stdout);
   free(rowname[0]);
   free(rowname);
   free(rmatbeg);
   free(rmatind);
   free(rmatval);
-  printf("freed\n");
-  fflush(stdout);
+  //  printf("freed\n");
+  //  fflush(stdout);
 }
 
 
@@ -1797,7 +1797,7 @@ void MyCplexSolver::addDemandCons()
     ccnt = 0;
     rcnt = 1;
     rhs = m_netWithRelays->getDemand(i);
-    printf("Demand %d = %.2f\n",i,rhs);
+    //    printf("Demand %d = %.2f\n",i,rhs);
     sense = 'E';
     colname = NULL;
     sprintf(rowname[0],"innode[%s]",ni.id.c_str());
@@ -1872,7 +1872,7 @@ void MyCplexSolver::addRelaySelCons()
     sense = 'G';
     colname = NULL;
     sprintf(rowname[0],"relaysel[%s]",ni.id.c_str());
-    printf("Adding row %s\n", rowname[0]);
+    //    printf("Adding row %s\n", rowname[0]);
     fflush(stdout);
     retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			&rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
@@ -1953,7 +1953,7 @@ MyCplexSolver::addFlowSelCons()
     sense = 'L';
     colname = NULL;
     sprintf(rowname[0],"flowsel[%s]",ni.id.c_str());
-    printf("Adding row %s\n", rowname[0]);
+    //    printf("Adding row %s\n", rowname[0]);
     fflush(stdout);
     retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			&rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
@@ -1985,8 +1985,8 @@ MyCplexSolver::setObjFunc()
   int retCPX;
   CPXchgobjsen(m_cpxenv, m_cpxlp, CPX_MIN);
 
-  printf("setting objecive\n");
-  fflush(stdout);
+  //  printf("setting objecive\n");
+  //  fflush(stdout);
 
   int allxs = m_varX.size() + m_varFX.size()+ m_varY.size() + m_varXD.size() + m_varXF.size();
   int *indeces = (int *)malloc(allxs*sizeof(int));
@@ -2008,12 +2008,12 @@ MyCplexSolver::setObjFunc()
       m_netWithRelays->maxPathLength()
       * m_metric->max()
       * prob.ilp_model.incomplete_delivery_penalty;
-    printf("using incomplete_delivery_penalty %.2f\n",
-	   incomplete_delivery_penalty);
-    printf("maxPathLength %d metricMax %f penalty_w %.2f\n",
-	   m_netWithRelays->maxPathLength(),
-	   m_metric->max(),
-	   prob.ilp_model.incomplete_delivery_penalty);
+    //    printf("using incomplete_delivery_penalty %.2f\n",
+    //	   incomplete_delivery_penalty);
+    //printf("maxPathLength %d metricMax %f penalty_w %.2f\n",
+    //	   m_netWithRelays->maxPathLength(),
+    //	   m_metric->max(),
+    //	   prob.ilp_model.incomplete_delivery_penalty);
 
     for(int i=0; i< m_netWithRelays->size();i++)
     {	
@@ -2050,8 +2050,8 @@ MyCplexSolver::setObjFunc()
 
   /// + flow neighbor penalties
   double flow_neighbor_penalty = (m_netWithRelays->expectedHopCount() * m_metric->max() * allD);
-  printf("flow_neighbor_penalty %f w %f\n",flow_neighbor_penalty,
-	 prob.ilp_model.flow_neighbor_penalty_w);
+  //  printf("flow_neighbor_penalty %f w %f\n",flow_neighbor_penalty,
+  //	 prob.ilp_model.flow_neighbor_penalty_w);
   flow_neighbor_penalty *= prob.ilp_model.flow_neighbor_penalty_w;
 
   //flow_neighbor_penalty /= m_netWithRelays->numStatic();
@@ -2072,7 +2072,7 @@ MyCplexSolver::setObjFunc()
   retCPX = CPXchgobj(m_cpxenv, m_cpxlp, cnt,indeces,values);
 
   if (retCPX) my_free_cplex("CPX chgobj", retCPX, m_cpxenv, m_cpxlp);
-  printf("objecive SET\n");
+  //  printf("objecive SET\n");
   fflush(stdout);
 
 }
@@ -2105,8 +2105,8 @@ MyCplexSolver::addBWCapacityCons()
   int *rmatind = (int *)malloc(m_varX.size()*sizeof(int));
   double *rmatval = (double *)malloc(m_varX.size()*sizeof(double));
 
-  printf("Adding %d bandwidth capacity constraints\n", nnodes);
-  fflush(stdout);
+  //  printf("Adding %d bandwidth capacity constraints\n", nnodes);
+  //fflush(stdout);
 
   for(int i=0; i< nnodes; i++)
   {
@@ -2141,7 +2141,7 @@ MyCplexSolver::addBWCapacityCons()
     sense = 'L';
     colname = NULL;
     sprintf(rowname[0],"bwcap[%s]",ni.id.c_str());
-    printf("Adding row %s\n", rowname[0]);
+    //    printf("Adding row %s\n", rowname[0]);
     fflush(stdout);
     retCPX = CPXaddrows(m_cpxenv, m_cpxlp,ccnt,rcnt,nzcnt,
 			&rhs,&sense, rmatbeg,rmatind,rmatval,colname,rowname);
@@ -2233,8 +2233,8 @@ void MyCplexSolver::initialize()
   }
   addOtherVars();
 
-  printf("added %d X Variables\n", m_varX.size());
-  fflush(stdout);
+  //  printf("added %d X Variables\n", m_varX.size());
+  //  fflush(stdout);
   
   addFlowCons();
   addFlowEdgeCons();
@@ -2487,11 +2487,15 @@ bool MyCplexSolver::solve()
   int cpx_writemps = prob.lp_params.save_mps;
   int cpx_writeparam = prob.mycplex_params.save_cpx_params;
 
+
   /// execution flags 
   char CPX_out, GLPK_out, verbose;
   CPX_out = GLPK_out = CPX_noMIP = verbose = 0;
+  
   double cpx_strongtimelim = prob.lp_params.strong_timelim; // Strong Time limit
   double cpx_weaktimelim = prob.lp_params.weak_timelim; // weak time limit
+  int    cpx_clocktype = prob.mycplex_params.clocktype;
+  
   CpuTime cpu_time;
 
   int usetimelimcallback = 
@@ -2614,6 +2618,11 @@ bool MyCplexSolver::solve()
     if (retCPX) my_free_cplex("CPX set dbl param", retCPX, cpx_env, cpx_lp);
   }
 
+  retCPX = CPXsetintparam(cpx_env, CPX_PARAM_CLOCKTYPE, cpx_clocktype);
+  printf("CPLEX: Seting clocktype to %d\n", cpx_clocktype);
+  if (retCPX) my_free_cplex("CPX set clocktype", retCPX, cpx_env, cpx_lp);
+
+  
   retCPX = CPXsetintparam(cpx_env, CPX_PARAM_LPMETHOD, cpx_lpmethod);
   printf("CPLEX: Seting lpmethod to %d\n", cpx_lpmethod);
   if (retCPX) my_free_cplex("CPX set lpmethod", retCPX, cpx_env, cpx_lp);

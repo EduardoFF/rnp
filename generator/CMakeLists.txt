@@ -24,7 +24,6 @@ add_library(graph graph.cpp)
 #add_library(cputime CpuTime.cc)
 
 add_library(mst mst.cpp)
-
 add_library(network network.cpp)
 
 #add_library(geometry Geometry.cpp)
@@ -63,7 +62,7 @@ add_library(cplex_solver cplex_solver.cc)
 
 
 add_library(generator generator.cpp)
-add_library(Plotter Plotter.cpp)
+#add_library(Plotter Plotter.cpp)
 
 find_package(Pthreads REQUIRED)
 if(CPLEX_CPP)

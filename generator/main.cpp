@@ -19,7 +19,6 @@
 #include "Random.h"
 #include "generator.h"
 #include "graph.h"
-#include "Plotter.h"
 #include "network.h"
 #include "lpsolver.h"
 #include "ga_solver.h"
@@ -27,12 +26,24 @@
 #include "heuristic.h"
 #include "mst.h"
 #include "solver.h"
+
+#ifndef MATHEURISTIC_DISABLED
 #include "matheuristic.h"
-#include "cplex_solver.h"
-#ifdef CPLEX_CPP
-#define COMPILE_CPLEX_CPP
-#include "cplex_solver_v2.h"
 #endif
+
+#ifndef CPLEX_DISABLED
+#include "cplex_solver.h"
+#endif
+
+/** 
+    CPLEX C++ API not supported yet
+    #ifdef ILOG_CPLEX_CPP_ENABLED
+    #define COMPILE_CPLEX_CPP
+    #include "cplex_solver_v2.h"
+    #endif
+**/
+
+
 #include "rnpsolution.h"
 
 ///NOTES:
@@ -113,7 +124,8 @@ int redirect_output(string ofile)
 }
 
 
-void output_connectivity(string filename, int n)
+void
+output_connectivity(string filename, int n)
 {
   ofstream connFile(filename.c_str());
   connFile << "CONNECTED_COMPONENTS " << n;
@@ -121,9 +133,11 @@ void output_connectivity(string filename, int n)
 }
 
 
-void output_plain(Network *net, string filename){
+void
+output_plain(Network *net, string filename)
+{
   /*  Generate plain file with description */
-  string	plain_file = prob.output_path + prob.instance_id + "-" + filename + ".net";
+  string plain_file = prob.output_path + prob.instance_id + "-" + filename + ".net";
 
   ofstream netFile (plain_file.c_str());
 
@@ -136,8 +150,9 @@ void output_plain(Network *net, string filename){
 
 }
 
-//NOTE: Check if demand must be integer,if we use integer flows
-void setDemandFromFile(string filename, Network *net)
+//TODO: Check if demand must be integer,if we use integer flows
+void
+setDemandFromFile(string filename, Network *net)
 {
   printf("Setting demand from file %s\n", 
 	 filename.c_str());
@@ -219,6 +234,9 @@ int main(int argc, char *argv[])
   if(suffix_id != "none")
     prob.instance_id = prob.instance_id + suffix_id;
 
+  prob.instance_path = cl.follow(prob.instance_path.c_str(), 1,"--instance-path");
+  prob.output_path = cl.follow(prob.output_path.c_str(), 1,"--output-path");
+  prob.generation_path = cl.follow(prob.generation_path.c_str(), 1,"--generation-path");
   /// Finally, check parameters and fix file paths
   checkParameters();
 

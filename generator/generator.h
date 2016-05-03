@@ -62,6 +62,7 @@ typedef struct
   int parallelmode;
   int mipdisplay;
   int probe;
+  int clocktype;
   bool save_cpx_params; /// bool: save cplex params
 } mycplex_params_t;
 

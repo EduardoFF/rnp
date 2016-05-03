@@ -19,8 +19,12 @@
 #ifndef _GRAPH
 #define _GRAPH
 
-#define GRAPHVIZ_POINTSCALE 50
-#define GRAPHVIZ_NODEWIDTH 1
+//#define GRAPHVIZ_POINTSCALE 50
+//#define GRAPHVIZ_NODEWIDTH 1
+
+#define GRAPHVIZ_POINTSCALE 1000
+#define GRAPHVIZ_NODEWIDTH 0.01
+
 #define GRAPHVIZ_CMD(x) "neato -Tps -n2 " + x + " > "
 
 //#include "network.h"
