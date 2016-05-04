@@ -1,54 +1,46 @@
 
 add_executable(main main.cpp)
 
-include_directories(../../utils/boost-geometry)
-
-
-#IF(GUROBICPP_FOUND)
-#	include_directories(${GUROBICPP_INCLUDE_DIRS})
-#ENDIF()
-#IF(CPLEX_FOUND)
-#	include_directories(${CPLEX_INCLUDE_DIRS})
-#ENDIF()
-
-
-link_directories(../../utils/boost-geometry/libs)
+#include_directories(../../utils/boost-geometry)
+#
+#link_directories(../../utils/boost-geometry/libs)
 
 enable_testing()
 
 
+include_directories(${CMAKE_SOURCE_DIR}/solver)
+include_directories(${CMAKE_SOURCE_DIR}/cputime)
+include_directories(${CMAKE_SOURCE_DIR}/socket_lib)
 
 add_library(metric metric.cpp)
 add_library(graph graph.cpp)
 
-#add_library(cputime CpuTime.cc)
 
 add_library(mst mst.cpp)
 add_library(network network.cpp)
 
-#add_library(geometry Geometry.cpp)
-
 add_library(rnpsolution rnpsolution.cc)
 add_library(lpsolver lpsolver.cc)
 
-find_package(GLPK REQUIRED)
-set(CORELIBS ${CORELIBS} ${GLPK_LIBRARIES})
+#find_package(GLPK REQUIRED)
+#set(CORELIBS ${CORELIBS} ${GLPK_LIBRARIES})
 
-find_package(SOLVER REQUIRED)
-set(CORELIBS ${CORELIBS} ${SOLVER_LIBRARIES})
+#find_package(SOLVER REQUIRED)
+#set(CORELIBS ${CORELIBS} ${SOLVER_LIBRARIES})
 
-find_package(CpuTime REQUIRED)
-set(CORELIBS ${CORELIBS} ${CpuTime_LIBRARIES})
+#find_package(CpuTime REQUIRED)
+#set(CORELIBS ${CORELIBS} ${CpuTime_LIBRARIES})
 
 find_package(ZLIB REQUIRED)
 
 set(CORELIBS ${CORELIBS} ${ZLIB_LIBRARIES})
-find_package(SOCKETLIB REQUIRED)
+#find_package(SOCKETLIB REQUIRED)
 
-target_link_libraries(lpsolver ${SOLVER_LIBRARIES}) 
+target_link_libraries(lpsolver solver) 
 
 add_library(matheuristic matheuristic.cc)
-target_link_libraries(matheuristic ${SOCKETLIB_LIBRARIES})
+target_link_libraries(matheuristic socket_lib)
+
 add_library(random Random.cpp)
 add_library(heuristic heuristic.cpp)
 
@@ -66,9 +58,14 @@ add_library(generator generator.cpp)
 
 find_package(Pthreads REQUIRED)
 if(CPLEX_CPP)
-	find_package(CPLEX REQUIRED)
-
+  find_package(CPLEX REQUIRED)
 endif(CPLEX_CPP)
+
+
+if( GLPK_FOUND )
+  message("added GLPK LIB ${GLPK_LIBRARIES}")
+  set(CORELIBS ${CORELIBS} ${GLPK_LIBRARIES})
+endif( GLPK_FOUND )
 
 find_package(Boost COMPONENTS serialization iostreams REQUIRED)
 MESSAGE("Boost LIBRARIES " ${Boost_LIBRARIES})
@@ -141,7 +138,7 @@ set( COMMON_LIBRARIES
 # geometry depends on old boost geometry lib 
 #	geometry 
 	heuristic 
-	Plotter 
+#	Plotter 
 	ga_solver 
 	matheuristic 
 	cplex_solver)
@@ -159,6 +156,6 @@ add_executable(mytest mytest.cpp)
 #link_directories(${Boost_LIBRARY_DIR})
 set( TESTLIBS  
   ${Boost_LIBRARIES}
-  ${SOLVER_LIBRARIES})
+  solver)
 target_link_libraries(mytest ${TESTLIBS} )
 #target_link_libraries(main ${Cairomm_LIBRARIES} solver metric calc_metric network GetPot graph wrapper generator random geometry heuristic cputime Plotter ${CORELIBS} ${GUROBI_LIBRARIES} ${GUROBICPP_LIBRARIES} -lpthread)

@@ -9,7 +9,7 @@
 #include <ext/stdio_filebuf.h>
 #include <errno.h>
 //#inclaude "stdio_filebuf.h"
-#include "socket_lib.h"
+#include <socket_lib.h>
 extern param prob;
 
 char rcv_buffer[_SOCKETLIB_MAX_MSG_SIZE];
