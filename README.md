@@ -3,7 +3,16 @@
 
 Dependencies:
 
+++++++++++ CPLEX ++++++++++
+
+tested with cplex studio 12.6
+
 ++++++++++ GAlib ++++++++++
+
+
+apt-get install libga-dev
+
+alternatively, you can install it manually:
 
 extract dependencies/galib247.zip and go to that folder from terminal.
 
@@ -19,14 +28,13 @@ To install GAlib on your system:
 
 
 ++++++++++ Other ++++++++++
-sudo apt-get install \
-cmake \
-build-essential \
-g++-4.8 \
-libstdc++-4.8-dev \
-libboost-dev \
-libboost-iostreams-dev \
-libboost-serialization-dev \
-zlib1g-dev \
-libgoogle-glog-dev \
-libglpk-dev \
+sudo apt-get install cmake build-essential g++-4.8 libstdc++-4.8-dev libboost-dev libboost-iostreams-dev libboost-serialization-dev zlib1g-dev libgoogle-glog-dev libglpk-dev
+
+
+++++++++++ Building ++++++++++
+
+
+cd rnp_core
+mkdir build
+cd build
+cmake -DCPLEX_ROOT_DIR=<your CPLEX path> ../
