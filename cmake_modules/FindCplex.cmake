@@ -7,6 +7,7 @@
 #  CPLEX_INCLUDE_DIRS       - include directory
 #  CPLEX_LIBRARIES          - library files
 
+SET(CPLEX_ROOT_DIR "$ENV{CPLEX_HOME}")
 if(WIN32)
   execute_process(COMMAND cmd /C set CPLEX_STUDIO_DIR OUTPUT_VARIABLE CPLEX_STUDIO_DIR_VAR ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
   
@@ -64,7 +65,7 @@ else()
   
 endif()
 
-
+message(STATUS "Looking for CPLEX in ${CPLEX_ROOT_DIR}")
 FIND_PATH(CPLEX_INCLUDE_DIR
   ilcplex/cplex.h
   HINTS ${CPLEX_ROOT_DIR}/cplex/include
